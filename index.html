@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <!-- 系統狀態欄底色 -->
+    <meta name="theme-color" content="#0B0B0C" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#0B0B0C" media="(prefers-color-scheme: light)">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <title>聖母百花大教堂 Duomo di Firenze｜語音導覽</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ferrari: {
+                            red: '#EF0000',       /* Accent Red */
+                            darkred: '#990000',   /* Deep Red */
+                            yellow: '#FFD700',    /* Gold */
+                            gold: '#F59E0B',      /* Amber Gold */
+                            carbon: '#09090A',    /* Dark Carbon Base */
+                            card: '#161619',      /* Dark Panel Card */
+                            border: '#2A2A30'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                        tech: ['Chakra Petch', 'Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style> 
+        html { 
+            scroll-behavior: smooth; 
+            -webkit-tap-highlight-color: transparent; 
+            background-color: #ffffff; 
+        } 
+        body { 
+            font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif; 
+            background-color: #ffffff; 
+            color: #111827; 
+            overflow-x: hidden; 
+        } 
+        
+        /* 底紋網格 */ 
+        .bg-carbon-pattern { 
+            background-color: #0d0d10; 
+            background-image:  
+                radial-gradient(rgba(239, 0, 0, 0.12) 1px, transparent 0), 
+                linear-gradient(45deg, #16161a 25%, transparent 25%, transparent 75%, #16161a 75%, #16161a), 
+                linear-gradient(45deg, #16161a 25%, transparent 25%, transparent 75%, #16161a 75%, #16161a); 
+            background-size: 24px 24px, 8px 8px, 8px 8px; 
+            background-position: 0 0, 0 0, 4px 4px; 
+        } 
+    
+        .no-scrollbar::-webkit-scrollbar { 
+            display: none; 
+        } 
+        .no-scrollbar { 
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
+        } 
+        
+        .header-safe-area { 
+            padding-top: max(0.75rem, calc(env(safe-area-inset-top, 20px) + 0.25rem)); 
+        } 
+    
+        /* 懸浮導覽列 */ 
+        .dock-safe-area { 
+            position: fixed; 
+            left: 1rem; 
+            right: 1rem; 
+            bottom: max(0.75rem, calc(env(safe-area-inset-bottom, 0px) + 0.5rem)); 
+            background: rgba(13, 13, 16, 0.94); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid rgba(239, 0, 0, 0.45); 
+            box-shadow:  
+                inset 0 1px 1px rgba(255, 255, 255, 0.15), 
+                0 0 20px rgba(239, 0, 0, 0.25), 
+                0 15px 30px -10px rgba(0, 0, 0, 0.6); 
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 50; 
+        } 
+    
+        .ferrari-stripe { 
+            background: linear-gradient(90deg, #EF0000 0%, #FFD700 50%, #EF0000 100%); 
+        } 
+    
+        .carbon-card, .carbon-card-active { 
+            background-color: #0d0d10; 
+            background-image:  
+                radial-gradient(rgba(239, 0, 0, 0.1) 1px, transparent 0), 
+                linear-gradient(45deg, #16161a 25%, transparent 25%, transparent 75%, #16161a 75%, #16161a), 
+                linear-gradient(45deg, #16161a 25%, transparent 25%, transparent 75%, #16161a 75%, #16161a); 
+            background-size: 24px 24px, 8px 8px, 8px 8px; 
+            background-position: 0 0, 0 0, 4px 4px; 
+            border: 1px solid rgba(255, 255, 255, 0.12); 
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); 
+            position: relative; 
+            overflow: hidden; 
+            color: #E5E7EB;
+        } 
+
+        .carbon-card::before, .carbon-card-active::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; left: 0; right: 0; 
+            height: 2px; 
+            background: linear-gradient(90deg, #EF0000, #FFD700, #EF0000); 
+            transition: opacity 0.4s ease; 
+        } 
+
+        .carbon-card::before { 
+            opacity: 0.25; 
+        } 
+        
+        .carbon-card:hover::before, .carbon-card-active::before { 
+            opacity: 1; 
+            background: linear-gradient(90deg, #EF0000, #FFD700, #EF0000); 
+        } 
+
+        .carbon-card-active {
+            border-color: rgba(239, 0, 0, 0.7);
+            box-shadow: 0 0 18px rgba(239, 0, 0, 0.25);
+        }
+    
+        /* 地圖區域動態與閃爍效果 */
+        .room-box {
+            transition: fill 0.2s ease, stroke 0.2s ease;
+            cursor: pointer;
+            fill: #273043;
+            stroke: #4b5563;
+            stroke-width: 1;
+        }
+
+        .room-box:hover {
+            fill: #990000;
+            stroke: #FFD700;
+            stroke-width: 1.5;
+        }
+
+        .room-box.active-room,
+        .active-room .room-box,
+        .active-room {
+            fill: #EF0000 !important;
+            stroke: #FFD700 !important;
+            stroke-width: 3px !important;
+            animation: roomPulse 0.8s infinite alternate ease-in-out !important;
+            filter: drop-shadow(0 0 12px #EF0000) !important;
+        }
+
+        .room-label {
+            font-size: 8px;
+            font-weight: bold;
+            fill: #ffffff;
+            pointer-events: none;
+            text-anchor: middle;
+            dominant-baseline: central;
+            font-family: 'Chakra Petch', sans-serif;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .room-box.active-room + .room-label,
+        .room-box.active-room ~ .room-label {
+            fill: #ffffff;
+            font-weight: 900;
+        }
+
+        @keyframes roomPulse {
+            0% {
+                fill: #EF0000;
+                stroke: #FFD700;
+                filter: drop-shadow(0 0 4px #EF0000);
+                opacity: 0.6;
+            }
+            100% {
+                fill: #FFD700;
+                stroke: #EF0000;
+                filter: drop-shadow(0 0 16px #FFD700);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white min-h-screen flex items-center justify-center p-0 sm:p-4">
+
+    <div id="app" class="w-full max-w-[430px] h-dvh sm:h-[880px] bg-white sm:rounded-[42px] shadow-2xl sm:border-[6px] border-gray-200 flex flex-col overflow-hidden relative pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+
+        <!-- Top Sticky Header -->
+        <header class="sticky top-0 z-50 flex flex-col px-4 pt-2 pb-3 header-safe-area text-white transition-colors bg-[#0B0B0D]/95 backdrop-blur-xl border-b border-red-900/40 shadow-md">
+            <div class="h-1 w-full ferrari-stripe rounded-full mb-2"></div>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-600 p-0.5 shadow-lg shadow-yellow-500/20 flex items-center justify-center shrink-0">
+                        <div class="w-full h-full bg-black rounded-[7px] flex items-center justify-center p-1">
+                            <i data-lucide="church" class="w-5 h-5 text-ferrari-yellow"></i>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <p class="font-tech text-[14px] font-bold uppercase tracking-widest text-amber-300 leading-none">Duomo di Firenze</p>
+                        <h1 class="text-[18px] font-black text-white font-sans tracking-tight leading-tight mt-0.5">聖母百花大教堂語音導覽</h1>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN SCROLLABLE CONTENT AREA -->
+        <div id="main-content" class="flex-1 overflow-y-auto no-scrollbar pb-32 bg-white">
+            
+            <div id="tab-artworks" class="p-4 space-y-4">
+                
+                <!-- Hero Header Card -->
+                <div class="carbon-card rounded-2xl p-4 border border-white/10">
+                    <div class="flex items-start justify-between relative z-10">
+                        <div>
+                            <span class="inline-block px-2 py-0.5 rounded bg-ferrari-carbon border border-ferrari-red text-ferrari-yellow text-[14px] font-extrabold uppercase tracking-widest mb-1 shadow-sm">
+                                DUOMO DI FIRENZE AUDIO GUIDE
+                            </span>
+                            <h1 class="text-[20px] font-black text-metal tracking-tight">聖母百花大教堂 20 大導覽亮點</h1>
+                            <p class="text-[14px] text-gray-400 mt-1">圓頂登頂、《最後的審判》壁畫、洗禮堂天堂之門與博物館珍品</p>
+                        </div>
+                        <div class="text-center bg-black/50 p-2 rounded-xl border border-white/10">
+                            <i data-lucide="headphones" class="w-5 h-5 text-ferrari-red mx-auto"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Search & Filter -->
+                    <div class="mt-4 flex items-center gap-2">
+                        <div class="relative flex-1">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-gray-400"></i>
+                            <input type="text" id="search-input" oninput="filterArtworks()" placeholder="搜尋景點或關鍵字 (如: 穹頂, 瓦薩里, 洗禮堂, 01-01)" 
+                                class="w-full bg-black/60 border border-white/15 rounded-xl pl-9 pr-3 py-1.5 text-[15px] text-white placeholder-gray-500 focus:outline-none focus:border-ferrari-red transition-all">
+                        </div>
+                        <button onclick="toggleFavoriteFilter()" id="fav-filter-btn" class="p-2 bg-black/60 border border-white/15 rounded-xl text-gray-400 hover:text-ferrari-yellow transition">
+                            <i data-lucide="bookmark" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category Filter Buttons -->
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+                    <button onclick="filterByFloor('all')" class="floor-tab-btn active text-[15px] font-bold px-3 py-1.5 rounded-xl border border-ferrari-red bg-ferrari-carbon text-ferrari-yellow whitespace-nowrap shadow-sm">
+                        全部 20 站點
+                    </button>
+                    <button onclick="filterByFloor('01｜Cupola 登頂')" class="floor-tab-btn text-[15px] font-bold px-3 py-1.5 rounded-xl border border-gray-700 bg-carbon-pattern text-gray-300 hover:text-white whitespace-nowrap">
+                        01｜Cupola 登頂
+                    </button>
+                    <button onclick="filterByFloor('02｜聖若翰洗者洗禮堂')" class="floor-tab-btn text-[15px] font-bold px-3 py-1.5 rounded-xl border border-gray-700 bg-carbon-pattern text-gray-300 hover:text-white whitespace-nowrap">
+                        02｜洗禮堂
+                    </button>
+                    <button onclick="filterByFloor('03｜地底遺址與教堂內部')" class="floor-tab-btn text-[15px] font-bold px-3 py-1.5 rounded-xl border border-gray-700 bg-carbon-pattern text-gray-300 hover:text-white whitespace-nowrap">
+                        03｜地底遺址與主教堂
+                    </button>
+                    <button onclick="filterByFloor('04｜主教座堂博物館')" class="floor-tab-btn text-[15px] font-bold px-3 py-1.5 rounded-xl border border-gray-700 bg-carbon-pattern text-gray-300 hover:text-white whitespace-nowrap">
+                        04｜主教座堂博物館
+                    </button>
+                </div>
+
+                <!-- Dynamic Artworks / Tour Items Container -->
+                <div id="artwork-list" class="space-y-3">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+            </div>
+
+            <div id="tab-map" class="p-4 hidden space-y-4">
+                <div class="carbon-card p-4 rounded-2xl border border-white/10">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h2 class="text-[19px] font-bold text-metal flex items-center gap-2">
+                                <i data-lucide="map" class="w-4 h-4 text-ferrari-red"></i> 聖母百花大教堂實境地圖
+                            </h2>
+                            <p class="text-[14px] text-gray-400">對照現場平面圖標號，支援單手拖曳與縮放</p>
+                        </div>
+                        <div class="flex gap-1 bg-black/40 p-1 rounded-xl border border-white/10">
+                            <button onclick="switchMapFloor('01｜Cupola 登頂')" id="btn-map-01" class="text-[13px] px-2 py-1 rounded-lg font-bold bg-ferrari-carbon border border-ferrari-red text-white">登頂/主教堂</button>
+                            <button onclick="switchMapFloor('04｜主教座堂博物館')" id="btn-map-04" class="text-[13px] px-2 py-1 rounded-lg font-bold text-gray-400 hover:text-white">洗禮堂/博物館</button>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Map Container -->
+                    <div id="map-container" class="relative bg-[#09090c] rounded-xl overflow-hidden border border-white/10 p-2 min-h-[420px] flex flex-col justify-between select-none">
+                        
+                        <div class="flex justify-between items-center z-10 mb-1">
+                            <span id="map-floor-title" class="text-[14px] font-tech font-bold text-ferrari-gold bg-black/80 px-2 py-0.5 rounded border border-white/10">
+                                CATHEDRAL & CUPOLA (主教堂與圓頂登頂地圖)
+                            </span>
+                            
+                            <!-- Quick Controls -->
+                            <div class="flex items-center gap-1 bg-black/80 px-1.5 py-0.5 rounded border border-white/10">
+                                <button onclick="zoomMap(0.3)" title="放大" class="p-1 text-gray-300 hover:text-ferrari-yellow active:scale-95 transition">
+                                    <i data-lucide="zoom-in" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="zoomMap(-0.3)" title="縮小" class="p-1 text-gray-300 hover:text-ferrari-yellow active:scale-95 transition">
+                                    <i data-lucide="zoom-out" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="resetMapZoom()" title="重設" class="p-1 text-gray-300 hover:text-ferrari-yellow active:scale-95 transition">
+                                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 01 & 03 Main Duomo Floor & Dome Map Graphic SVG Canvas -->
+                        <div id="map-graphic-1f" class="my-1 relative w-full h-[380px] bg-[#07070a] rounded-lg border border-white/10 overflow-hidden cursor-grab active:cursor-grabbing touch-none">
+                            <div id="map-viewport-1f" class="w-full h-full origin-top-left transition-transform duration-75">
+                                <svg class="w-full h-full select-none" viewBox="0 0 500 650" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Cathedral Nave & Octagonal Dome Outline -->
+                                    <path d="M 170 580 L 330 580 L 330 380 L 450 380 L 450 220 L 330 220 L 330 100 Q 250 60 170 100 L 170 220 L 50 220 L 50 380 L 170 380 Z" fill="#16161f" stroke="#EF0000" stroke-width="2"/>
+                                    
+                                    <!-- Octagonal Dome Base -->
+                                    <polygon points="250,220 310,250 310,330 250,360 190,330 190,250" fill="#222230" stroke="#FFD700" stroke-width="2"/>
+                                    <circle cx="250" cy="290" r="45" fill="#2d1a24" stroke="#EF0000" stroke-dasharray="3 3" stroke-width="1.5"/>
+
+                                    <text x="250" y="600" text-anchor="middle" fill="#888899" font-size="10" font-weight="bold">主入口正門</text>
+                                    <text x="250" y="290" text-anchor="middle" fill="#FFD700" font-size="10" font-weight="bold">Cupola 圓頂</text>
+                                    <text x="250" y="470" text-anchor="middle" fill="#888899" font-size="10" font-weight="bold">教堂中殿</text>
+                                    <text x="250" y="530" text-anchor="middle" fill="#FFD700" font-size="9" font-weight="bold">03-01 地底遺址</text>
+
+                                    <!-- Dome Tour Markers 01-01 to 01-06 -->
+                                    <g id="room-01-01" onclick="selectArtworkByRoom('01-01')" class="cursor-pointer">
+                                        <circle cx="190" cy="250" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="190" y="250" class="room-label" font-size="8">1-1</text>
+                                    </g>
+                                    <g id="room-01-02" onclick="selectArtworkByRoom('01-02')" class="cursor-pointer">
+                                        <circle cx="250" cy="250" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="250" y="250" class="room-label" font-size="8">1-2</text>
+                                    </g>
+                                    <g id="room-01-03" onclick="selectArtworkByRoom('01-03')" class="cursor-pointer">
+                                        <circle cx="310" cy="250" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="310" y="250" class="room-label" font-size="8">1-3</text>
+                                    </g>
+                                    <g id="room-01-04" onclick="selectArtworkByRoom('01-04')" class="cursor-pointer">
+                                        <circle cx="310" cy="330" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="310" y="330" class="room-label" font-size="8">1-4</text>
+                                    </g>
+                                    <g id="room-01-05" onclick="selectArtworkByRoom('01-05')" class="cursor-pointer">
+                                        <circle cx="250" cy="330" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="250" y="330" class="room-label" font-size="8">1-5</text>
+                                    </g>
+                                    <g id="room-01-06" onclick="selectArtworkByRoom('01-06')" class="cursor-pointer">
+                                        <circle cx="250" cy="290" r="12" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="250" y="290" class="room-label" font-size="8">1-6</text>
+                                    </g>
+
+                                    <!-- Cathedral Interior Markers 03-01 to 03-04 -->
+                                    <g id="room-03-01" onclick="selectArtworkByRoom('03-01')" class="cursor-pointer">
+                                        <circle cx="250" cy="510" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="250" y="510" class="room-label" font-size="8">3-1</text>
+                                    </g>
+                                    <g id="room-03-02" onclick="selectArtworkByRoom('03-02')" class="cursor-pointer">
+                                        <circle cx="200" cy="460" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="200" y="460" class="room-label" font-size="8">3-2</text>
+                                    </g>
+                                    <g id="room-03-03" onclick="selectArtworkByRoom('03-03')" class="cursor-pointer">
+                                        <circle cx="250" cy="410" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="250" y="410" class="room-label" font-size="8">3-3</text>
+                                    </g>
+                                    <g id="room-03-04" onclick="selectArtworkByRoom('03-04')" class="cursor-pointer">
+                                        <circle cx="190" cy="330" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="190" y="330" class="room-label" font-size="8">3-4</text>
+                                    </g>
+
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- 02 Baptistery & 04 Museum Graphic SVG Canvas -->
+                        <div id="map-graphic-2f" class="my-1 relative w-full h-[380px] bg-black/80 rounded-lg border border-white/10 overflow-hidden hidden cursor-grab active:cursor-grabbing touch-none">
+                            <div id="map-viewport-2f" class="w-full h-full origin-top-left transition-transform duration-75">
+                                <svg class="w-full h-full select-none" viewBox="0 0 500 650" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    
+                                    <!-- Octagonal Baptistery (Left/Bottom) -->
+                                    <polygon points="150,420 210,420 250,460 250,520 210,560 150,560 110,520 110,460" fill="#1b202e" stroke="#FFD700" stroke-width="2"/>
+                                    <text x="180" y="490" text-anchor="middle" fill="#FFD700" font-size="11" font-weight="bold">聖若翰洗禮堂</text>
+
+                                    <!-- Museum Complex (Right/Top) -->
+                                    <rect x="280" y="100" width="180" height="420" fill="#16161f" stroke="#EF0000" stroke-width="2" rx="10"/>
+                                    <text x="370" y="130" text-anchor="middle" fill="#888899" font-size="11" font-weight="bold">主教座堂博物館</text>
+
+                                    <!-- Baptistery Markers 02-01 to 02-03 -->
+                                    <g id="room-02-01" onclick="selectArtworkByRoom('02-01')" class="cursor-pointer">
+                                        <circle cx="180" cy="540" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="180" y="540" class="room-label" font-size="8">2-1</text>
+                                    </g>
+                                    <g id="room-02-02" onclick="selectArtworkByRoom('02-02')" class="cursor-pointer">
+                                        <circle cx="250" cy="490" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="250" y="490" class="room-label" font-size="8">2-2</text>
+                                    </g>
+                                    <g id="room-02-03" onclick="selectArtworkByRoom('02-03')" class="cursor-pointer">
+                                        <circle cx="180" cy="460" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="180" y="460" class="room-label" font-size="8">2-3</text>
+                                    </g>
+
+                                    <!-- Museum Markers 04-01 to 04-07 -->
+                                    <g id="room-04-01" onclick="selectArtworkByRoom('04-01')" class="cursor-pointer">
+                                        <circle cx="370" cy="170" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="370" y="170" class="room-label" font-size="8">4-1</text>
+                                    </g>
+                                    <g id="room-04-02" onclick="selectArtworkByRoom('04-02')" class="cursor-pointer">
+                                        <circle cx="330" cy="230" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="330" y="230" class="room-label" font-size="8">4-2</text>
+                                    </g>
+                                    <g id="room-04-03" onclick="selectArtworkByRoom('04-03')" class="cursor-pointer">
+                                        <circle cx="410" cy="280" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="410" y="280" class="room-label" font-size="8">4-3</text>
+                                    </g>
+                                    <g id="room-04-04" onclick="selectArtworkByRoom('04-04')" class="cursor-pointer">
+                                        <circle cx="330" cy="340" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="330" y="340" class="room-label" font-size="8">4-4</text>
+                                    </g>
+                                    <g id="room-04-05" onclick="selectArtworkByRoom('04-05')" class="cursor-pointer">
+                                        <circle cx="410" cy="390" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="410" y="390" class="room-label" font-size="8">4-5</text>
+                                    </g>
+                                    <g id="room-04-06" onclick="selectArtworkByRoom('04-06')" class="cursor-pointer">
+                                        <circle cx="330" cy="440" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="330" y="440" class="room-label" font-size="8">4-6</text>
+                                    </g>
+                                    <g id="room-04-07" onclick="selectArtworkByRoom('04-07')" class="cursor-pointer">
+                                        <circle cx="370" cy="480" r="11" class="room-box" fill="#EF0000" stroke="#FFD700" stroke-width="2"/>
+                                        <text x="370" y="480" class="room-label" font-size="8">4-7</text>
+                                    </g>
+
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[14px] text-gray-300 font-tech bg-black/80 p-2 rounded-lg border border-white/10">
+                            <span class="flex items-center gap-1"><i data-lucide="hand" class="w-3.5 h-3.5 text-ferrari-yellow"></i> 支援單手指拖曳與雙指縮放</span>
+                            <span id="flashing-room-tag" class="text-ferrari-gold font-bold">閃爍區域: 01-01 點位</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Itinerary Route Steps -->
+                <div class="carbon-card p-4 rounded-2xl border border-white/10">
+                    <h3 class="text-[17px] font-bold text-metal mb-2 flex items-center gap-2">
+                        <i data-lucide="route" class="w-4 h-4 text-ferrari-red"></i> 導覽參觀路線指引 Sequence Guide
+                    </h3>
+                    <div id="route-steps" class="space-y-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-info" class="p-4 hidden space-y-4">
+                
+                <!-- 重要觀賞時機與貼心提示卡片 -->
+                <div class="carbon-card p-4 rounded-2xl border border-white/10 space-y-3">
+                    <h2 class="text-[20px] font-bold text-metal flex items-center gap-2">
+                        <i data-lucide="info" class="w-4 h-4 text-ferrari-red"></i> 核心亮點與參觀提示
+                    </h2>
+                    
+                    <div class="space-y-2.5 text-[16px]">
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/10 flex items-start gap-3">
+                            <div class="w-7 h-7 rounded-lg bg-ferrari-red/20 border border-ferrari-red/40 flex items-center justify-center text-ferrari-red shrink-0 mt-0.5">
+                                <i data-lucide="award" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-ferrari-gold">文藝復興工程奇蹟</div>
+                                <p class="text-gray-300 mt-0.5">布魯內萊斯基的魚骨式磚砌與雙層穹頂設計，無須傳統木架即解決龐大側推力，開創文藝復興建築史新頁。</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/10 flex items-start gap-3">
+                            <div class="w-7 h-7 rounded-lg bg-ferrari-red/20 border border-ferrari-red/40 flex items-center justify-center text-ferrari-red shrink-0 mt-0.5">
+                                <i data-lucide="navigation" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-ferrari-gold">雙視角欣賞壁畫《最後的審判》</div>
+                                <p class="text-gray-300 mt-0.5">建議先在地面感受龐大的宗教宏偉感，登頂過程中於夾層近距離平視人物動態與戲劇性細節。</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/10 flex items-start gap-3">
+                            <div class="w-7 h-7 rounded-lg bg-ferrari-red/20 border border-ferrari-red/40 flex items-center justify-center text-ferrari-red shrink-0 mt-0.5">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-ferrari-gold">聖母百花大教堂 6 大核心作品</div>
+                                <p class="text-gray-300 mt-0.5">① 布魯內萊斯基圓頂<br>② 圓頂壁畫《最後的審判》<br>③ 洗禮堂金色馬賽克穹頂<br>④ 天堂之門（吉貝爾蒂透視革新）<br>⑤ 米開朗基羅《佛羅倫斯聖殤》<br>⑥ 多納太羅《抹大拉的瑪利亞》</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Viewpoints Card -->
+                <div class="carbon-card p-4 rounded-2xl border border-white/10 space-y-3">
+                    <h2 class="text-[20px] font-bold text-metal flex items-center gap-2">
+                        <i data-lucide="camera" class="w-4 h-4 text-ferrari-red"></i> 推薦拍攝與現場賞析細節
+                    </h2>
+                    
+                    <div class="space-y-2 text-[16px]">
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/10">
+                            <div class="font-bold text-ferrari-gold flex items-center justify-between">
+                                <span>① 登頂頂端：佛羅倫斯全景</span>
+                                <span class="text-[14px] font-tech text-gray-400">Cupola 頂部</span>
+                            </div>
+                            <p class="text-gray-400 mt-1">遠眺喬托鐘樓、阿諾河、托斯卡尼丘陵與紅色屋頂歷史城區天際線。</p>
+                        </div>
+
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/10">
+                            <div class="font-bold text-ferrari-gold flex items-center justify-between">
+                                <span>② 聖若翰洗禮堂：幾何與金光</span>
+                                <span class="text-[14px] font-tech text-gray-400">洗禮堂</span>
+                            </div>
+                            <p class="text-gray-400 mt-1">外牆綠白大理石羅馬式幾何分格，以及內部拜占庭金箔馬賽克的垂直反射感。</p>
+                        </div>
+
+                        <div class="p-3 bg-black/40 rounded-xl border border-white/10">
+                            <div class="font-bold text-ferrari-gold flex items-center justify-between">
+                                <span>③ 主教座堂博物館：大師雕塑真跡</span>
+                                <span class="text-[14px] font-tech text-gray-400">博物館室內</span>
+                            </div>
+                            <p class="text-gray-400 mt-1">近距離觀賞米開朗基羅晚年聖殤的粗糙感，與多納太羅寫實苦修的抹大拉雕像。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="dock-safe-area rounded-2xl px-4 py-2 flex items-center justify-between">
+            <!-- Mini Player Status -->
+            <div class="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onclick="openArtworkModal()">
+                <img id="player-thumb" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Florence_Duomo_from_Michelangelo_hill.jpg/800px-Florence_Duomo_from_Michelangelo_hill.jpg" 
+                    alt="Current Point" class="w-9 h-9 rounded-lg object-cover border border-ferrari-red" onerror="this.src='https://placehold.co/200x200/161619/FFD700?text=Duomo'">
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5">
+                        <span id="player-room" class="text-[14px] font-tech bg-ferrari-carbon border border-ferrari-red text-white px-1 rounded font-bold">01-01</span>
+                        <h4 id="player-title" class="text-[15px] font-bold text-white truncate">開始登頂前：世界最大的磚砌穹頂之一</h4>
+                    </div>
+                    <p id="player-artist" class="text-[14px] text-gray-400 truncate">01｜聖母百花大教堂 Cupola 登頂</p>
+                    <div class="w-full bg-black/60 rounded-full h-1 mt-1 overflow-hidden">
+                        <div id="audio-progress-bar" class="bg-gradient-to-r from-ferrari-yellow to-ferrari-red h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Play & Pause Control -->
+            <button onclick="toggleAudioSpeech()" id="player-play-btn" class="w-9 h-9 rounded-full bg-ferrari-carbon border border-ferrari-gold text-ferrari-gold flex items-center justify-center led-red hover:scale-105 active:scale-95 transition ml-2">
+                <i id="play-icon" data-lucide="play" class="w-4 h-4 ml-0.5"></i>
+            </button>
+
+            <div class="h-6 w-[1px] bg-white/10 mx-2"></div>
+
+            <!-- Navigation Tabs -->
+            <div class="flex items-center gap-3">
+                <button onclick="switchTab('artworks')" id="nav-artworks" class="nav-btn active text-ferrari-yellow">
+                    <i data-lucide="church" class="w-5 h-5"></i>
+                </button>
+                <button onclick="switchTab('map')" id="nav-map" class="nav-btn text-gray-500 hover:text-ferrari-yellow">
+                    <i data-lucide="map-pin" class="w-5 h-5"></i>
+                </button>
+                <button onclick="switchTab('info')" id="nav-info" class="nav-btn text-gray-500 hover:text-ferrari-yellow">
+                    <i data-lucide="compass" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="artwork-modal" class="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-black/95 z-50 flex flex-col hidden backdrop-blur-2xl sm:rounded-[42px] overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-[#111114]/90 backdrop-blur border-b border-white/10 px-4 pb-3 flex items-center justify-between z-20 pt-[calc(env(safe-area-inset-top)+12px)] sm:pt-4">
+                <button onclick="closeArtworkModal()" class="p-2 text-gray-400 hover:text-white bg-black/40 rounded-xl border border-white/10 active:scale-95 transition-transform">
+                    <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                </button>
+                <span class="text-[15px] font-tech font-bold text-metal tracking-widest uppercase">DUOMO DI FIRENZE</span>
+                <button onclick="toggleCurrentFavorite()" id="modal-fav-btn" class="p-2 text-gray-400 hover:text-ferrari-yellow bg-black/40 rounded-xl border border-white/10 active:scale-95 transition-transform">
+                    <i data-lucide="bookmark" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-5 space-y-5 flex-1 overflow-y-auto pb-[calc(env(safe-area-inset-bottom)+20px)] sm:pb-5">
+                <div class="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+                    <img id="modal-image" src="" alt="Point" class="w-full h-[260px] object-contain block" onerror="this.src='https://placehold.co/800x600/161619/FFD700?text=Duomo+di+Firenze'">
+                    <span id="modal-room-badge" class="absolute top-3 left-3 bg-ferrari-carbon border border-ferrari-red text-white font-tech text-[14px] sm:text-[15px] font-black px-2.5 py-1 rounded-lg led-red tracking-wider select-none z-10">
+                        點位 01-01
+                    </span>
+                </div>
+
+                <div class="space-y-1">
+                    <h2 id="modal-title" class="text-[22px] font-tech text-white leading-tight">01-01｜開始登頂前：世界最大的磚砌穹頂之一</h2>
+                    <div class="flex items-center gap-2 text-[15px] font-tech text-ferrari-gold">
+                        <span id="modal-artist">01｜聖母百花大教堂 Cupola 登頂</span>
+                        <span>·</span>
+                        <span id="modal-year" class="text-gray-400">文藝復興工程</span>
+                    </div>
+                </div>
+
+                <!-- Dashboard Audio Control Console -->
+                <div class="p-4 rounded-2xl carbon-card border border-ferrari-red/40 space-y-3">
+                    <div class="flex items-center justify-between text-[15px] font-tech">
+                        <span class="text-gray-300 flex items-center gap-1"><i data-lucide="volume-2" class="w-3.5 h-3.5 text-ferrari-red"></i> 語音導覽播放 (Speech Synthesis)</span>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <button onclick="changeSpeed()" id="modal-speed-btn" class="text-[14px] font-tech text-gray-300 bg-black/50 px-2.5 py-1 rounded border border-white/10 hover:text-white">
+                            1.0x 語速
+                        </button>
+
+                        <button onclick="toggleAudioSpeech()" id="modal-play-btn" class="w-12 h-12 rounded-full bg-ferrari-carbon border border-ferrari-gold text-ferrari-gold flex items-center justify-center led-red hover:scale-105 active:scale-95 transition">
+                            <i id="modal-play-icon" data-lucide="play" class="w-6 h-6 ml-0.5"></i>
+                        </button>
+
+                        <button onclick="readAudioSpeech()" class="text-[14px] font-tech text-ferrari-red bg-black/50 px-2.5 py-1 rounded border border-white/10">
+                            重頭播放
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-[17px] font-bold text-ferrari-gold flex items-center gap-1.5 border-b border-white/10 pb-2">
+                        <i data-lucide="file-text" class="w-4 h-4 text-ferrari-red"></i> 導覽解說與賞析重點
+                    </h3>
+                    <div id="modal-description" class="text-[16px] leading-relaxed text-white space-y-3">
+                    </div>
+                </div>
+
+                <div class="p-3 bg-black/40 rounded-xl border border-white/10 space-y-1.5">
+                    <span class="text-[17px] font-tech font-bold text-ferrari-gold flex items-center gap-1">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 現場必看細節
+                    </span>
+                    <ul id="modal-highlights" class="text-[16px] text-white space-y-1 list-disc list-inside">
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* DUOMO DI FIRENZE DATABASE - 20 STATIONS */
+        const artworksData = [
+            {
+                id: 'duomo-01-01',
+                title: '開始登頂前：世界最大的磚砌穹頂之一',
+                artist: '01｜聖母百花大教堂 Cupola 登頂',
+                year: '1420年',
+                floor: '01｜Cupola 登頂',
+                room: '01-01 點位',
+                roomCode: '01-01',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Florence_Duomo_from_Michelangelo_hill.jpg/800px-Florence_Duomo_from_Michelangelo_hill.jpg',
+                audioText: '眼前這座巨大的圓頂，是佛羅倫斯最具代表性的建築，也是文藝復興工程史上的里程碑。15世紀初，佛羅倫斯主教座堂已經建成，但中央留下巨大的穹頂缺口，當時沒有任何傳統木製鷹架能安全支撐如此龐大的結構。1420年，菲利波・布魯內萊斯基提出革命性的雙層穹頂方案。外層與內層彼此支撐，並利用魚骨式磚砌與水平石材結構逐層向上建造。這座穹頂不只是「大」，更重要的是它證明了建築、數學、工程與古典藝術可以重新結合，成為文藝復興精神的象徵。',
+                highlights: [
+                    '先抬頭看圓頂的巨大尺度',
+                    '注意內外兩層穹頂的概念',
+                    '留意圓頂下方的八角形鼓座',
+                    '想像當時沒有現代起重機與鋼筋混凝土，仍完成這項工程'
+                ]
+            },
+            {
+                id: 'duomo-01-02',
+                title: '進入圓頂內部：仰望《最後的審判》',
+                artist: '01｜聖母百花大教堂 Cupola 登頂',
+                year: '16世紀壁畫',
+                floor: '01｜Cupola 登頂',
+                room: '01-02 點位',
+                roomCode: '01-02',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Vasari_Zuccari_Dome_Florence.jpg/800px-Vasari_Zuccari_Dome_Florence.jpg',
+                audioText: '進入圓頂內部後，請先不要急著往上走。抬頭看整個圓頂內壁，眼前的是16世紀完成的巨型壁畫《最後的審判》。這幅作品由喬爾喬・瓦薩里與費德里科・祖卡里等藝術家完成，描繪基督再次降臨、死者復活，以及天堂與地獄的最終審判。整幅壁畫從底部一路延伸到圓頂頂端，利用圓弧形空間製造巨大的垂直感。你現在所站的位置，其實非常特別：接下來登頂的階梯會讓你逐漸靠近這幅壁畫，從「仰望整體」變成可以近距離觀察人物與細節。',
+                highlights: [
+                    '找到畫面中央的基督',
+                    '注意基督周圍的聖母與天使',
+                    '往下看，可以看到大量復活者、天使與受審判的人群',
+                    '注意天堂與地獄形成的強烈對比'
+                ]
+            },
+            {
+                id: 'duomo-01-03',
+                title: '階梯開始：走進布魯內萊斯基的工程',
+                artist: '01｜聖母百花大教堂 Cupola 登頂',
+                year: '雙層穹頂結構',
+                floor: '01｜Cupola 登頂',
+                room: '01-03 點位',
+                roomCode: '01-03',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Florence_Duomo_Dome_Interior.jpg/800px-Florence_Duomo_Dome_Interior.jpg',
+                audioText: '現在開始登頂。這段階梯本身就是參觀的一部分。你走的不是一般教堂樓梯，而是在兩層穹頂之間逐漸向上。布魯內萊斯基採用雙層穹頂設計，內層負責主要結構，外層則形成我們從佛羅倫斯街頭看到的巨大紅瓦圓頂。登高過程中，你會逐漸看到原本平滑的穹頂變成一個立體的巨大工程結構。這也是為什麼登頂很值得親自體驗：在廣場上看到的是「建築的外觀」，而走進穹頂內部，才能真正理解它是如何被建造出來的。',
+                highlights: [
+                    '注意兩層穹頂之間的狹窄空間',
+                    '觀察磚砌與石材結構',
+                    '留意階梯如何沿著圓頂曲面上升',
+                    '回頭看，可以感受到高度快速增加'
+                ]
+            },
+            {
+                id: 'duomo-01-04',
+                title: '近距離觀看《最後的審判》',
+                artist: '01｜聖母百花大教堂 Cupola 登頂',
+                year: '夾層視角',
+                floor: '01｜Cupola 登頂',
+                room: '01-04 點位',
+                roomCode: '01-04',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Duomo_Florence_interior_fresco_02.jpg/800px-Duomo_Florence_interior_fresco_02.jpg',
+                audioText: '隨著高度增加，你會逐漸與壁畫中的人物處於同一視線高度。現在可以特別注意畫面的細節。中央是基督，右側與左側分別呈現不同的審判結果。天使、聖徒、復活者與被判入地獄的人群，被安排在層層圓弧之中。由於壁畫畫在彎曲的穹頂表面，人物比例會隨著位置改變。從地面遠望時，它是一幅完整的宏偉構圖；但從階梯近看，會發現大量人物與戲劇性的動作。這時不要只看「漂亮不漂亮」，而是看藝術家如何利用圓頂的曲面，把天堂、審判與地獄組織成一個巨大的垂直世界。',
+                highlights: [
+                    '中央基督：整幅構圖的核心',
+                    '聖母：位於基督身旁',
+                    '注意人物的肢體動態',
+                    '找尋天使、聖徒與復活者',
+                    '觀察越往下方，畫面如何變得更加戲劇化'
+                ]
+            },
+            {
+                id: 'duomo-01-05',
+                title: '接近圓頂頂端：感受八角穹頂',
+                artist: '01｜聖母百花大教堂 Cupola 登頂',
+                year: '工程結構頂部',
+                floor: '01｜Cupola 登頂',
+                room: '01-05 點位',
+                roomCode: '01-05',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Santa_Maria_del_Fiore_Dome_Structure.jpg/800px-Santa_Maria_del_Fiore_Dome_Structure.jpg',
+                audioText: '現在的位置已經非常接近圓頂頂部。從這裡回頭看，可以更清楚理解整個穹頂的八角形結構。你會看到巨大的弧面、肋骨與磚砌結構彼此交織。布魯內萊斯基真正偉大的地方，不只是把圓頂「蓋起來」，而是解決了重量、側向推力與施工方式等一連串工程問題。這項成就後來深刻影響了歐洲建築。當你站在這裡，可以把它想成文藝復興的一個重要轉折：建築師不再只是工匠，而開始成為結合數學、工程與藝術的設計者。',
+                highlights: [
+                    '往下看八角形穹頂的完整曲面',
+                    '看肋骨結構',
+                    '注意不同高度的透視變化',
+                    '回頭看壁畫，感受自己與地面的高度差'
+                ]
+            },
+            {
+                id: 'duomo-01-06',
+                title: '登頂：佛羅倫斯全景',
+                artist: '01｜聖母百花大教堂 Cupola 登頂',
+                year: '最高露台景觀',
+                floor: '01｜Cupola 登頂',
+                room: '01-06 點位',
+                roomCode: '01-06',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Florence_view_from_Cupola.jpg/800px-Florence_view_from_Cupola.jpg',
+                audioText: '終於來到圓頂頂端。現在看到的佛羅倫斯，是一座被文藝復興建築包圍的城市。最醒目的就是旁邊的喬托鐘樓，以及下方巨大的聖母百花大教堂本體。遠方可以看到阿諾河穿過城市，聖十字教堂、聖母新城區、舊城街區與托斯卡尼丘陵也逐漸展開。這個視角最特別的地方，是你終於可以從外部理解布魯內萊斯基穹頂：剛才你在裡面研究它的結構，現在則站在它的最高處，看見這座穹頂如何成為佛羅倫斯城市天際線的核心。',
+                highlights: [
+                    '最近的紅色屋頂： 佛羅倫斯歷史城區',
+                    "旁邊高塔： Giotto's Campanile",
+                    '下方： 聖母百花大教堂',
+                    '遠方： 阿諾河與托斯卡尼丘陵',
+                    '最重要： 回頭看你剛才登上的巨大圓頂'
+                ]
+            },
+            {
+                id: 'duomo-02-01',
+                title: '八角形洗禮堂',
+                artist: '02｜聖若翰洗者洗禮堂',
+                year: '羅馬式建築',
+                floor: '02｜聖若翰洗者洗禮堂',
+                room: '02-01 點位',
+                roomCode: '02-01',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Battistero_di_San_Giovanni_Florence.jpg/800px-Battistero_di_San_Giovanni_Florence.jpg',
+                audioText: '現在來到聖若翰洗者洗禮堂。這座建築比聖母百花大教堂更早，是佛羅倫斯最重要的宗教建築之一。它採用規整的八角形平面，外牆使用白色與深綠色大理石幾何分格，形成非常典型的佛羅倫斯羅馬式建築風格。洗禮堂在中世紀佛羅倫斯具有重要的城市象徵意義。佛羅倫斯人過去在這裡接受洗禮，因此它不只是宗教空間，也是城市共同體的重要場所。',
+                highlights: [
+                    '八角形建築平面',
+                    '白、綠大理石幾何圖案',
+                    '外牆的羅馬式拱窗',
+                    '注意它與旁邊巨大圓頂形成的年代與風格差異'
+                ]
+            },
+            {
+                id: 'duomo-02-02',
+                title: '天堂之門',
+                artist: '02｜聖若翰洗者洗禮堂',
+                year: '洛倫佐・吉貝爾蒂',
+                floor: '02｜聖若翰洗者洗禮堂',
+                room: '02-02 點位',
+                roomCode: '02-02',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Gates_of_Paradise_Florence.jpg/800px-Gates_of_Paradise_Florence.jpg',
+                audioText: '面向洗禮堂東側，可以看到最著名的「天堂之門」。這是洛倫佐・吉貝爾蒂完成的青銅門。門面被分成多個大型浮雕框格，以聖經故事為主題。吉貝爾蒂利用透視、人物尺度與前後景安排，使平面的青銅浮雕產生接近繪畫的空間感。米開朗基羅後來據說認為這扇門美得足以稱為「天堂之門」。因此，它的重要性不只是雕刻精美，更代表15世紀佛羅倫斯藝術家開始探索如何在平面作品中製造三維空間。',
+                highlights: [
+                    '注意每一塊浮雕的前景與背景',
+                    '找人物群與建築背景',
+                    '看浮雕如何從高浮雕逐漸變成淺浮雕',
+                    '注意門框周圍的小型人物與裝飾'
+                ]
+            },
+            {
+                id: 'duomo-02-03',
+                title: '洗禮堂內部：金色馬賽克穹頂',
+                artist: '02｜聖若翰洗者洗禮堂',
+                year: '拜占庭藝術傳統',
+                floor: '02｜聖若翰洗者洗禮堂',
+                room: '02-03 點位',
+                roomCode: '02-03',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Mosaic_ceiling_in_Battistero_di_San_Giovanni.jpg/800px-Mosaic_ceiling_in_Battistero_di_San_Giovanni.jpg',
+                audioText: '進入洗禮堂後，請立刻抬頭。內部最震撼的部分，是巨大的金色馬賽克穹頂。中央可以看到基督與《最後的審判》，周圍則安排天使、聖徒、先知以及聖經故事。金色背景利用光線反射，使整個空間產生強烈的神聖感。這種以金色馬賽克覆蓋穹頂的方式，深受拜占庭藝術傳統影響，也讓我們看到佛羅倫斯藝術並不是突然出現，而是在古典羅馬、基督教與拜占庭傳統上逐漸發展。',
+                highlights: [
+                    '中央巨大的基督',
+                    '基督下方的最後審判',
+                    '天堂與地獄的人物',
+                    '金色背景形成的光芒感',
+                    '八角形空間與穹頂的對應'
+                ]
+            },
+            {
+                id: 'duomo-03-01',
+                title: '地底遺址：Santa Reparata',
+                artist: '03｜地底遺址與教堂內部',
+                year: '早期基督教遺址',
+                floor: '03｜地底遺址與教堂內部',
+                room: '03-01 點位',
+                roomCode: '03-01',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Santa_reparata_scavi_01.jpg/800px-Santa_reparata_scavi_01.jpg',
+                audioText: '現在進入聖母百花大教堂地下的聖雷帕拉塔遺址。在今天這座巨大主教座堂建立以前，這裡曾經是佛羅倫斯重要的早期基督教教堂。當現在的聖母百花大教堂於13世紀末開始興建後，舊教堂並沒有立即消失，而是在新教堂施工過程中逐漸被取代。今天我們在地下看到的，就是那座古老教堂的遺跡。這裡保存了不同時期的建築痕跡與墓葬，也讓參觀者可以直接看到佛羅倫斯宗教建築如何從中世紀一路發展到文藝復興。',
+                highlights: [
+                    '舊教堂的柱列與牆基',
+                    '不同年代的地面',
+                    '馬賽克地坪',
+                    '古代墓葬',
+                    '注意地下遺址與上方巨大主教座堂的空間關係'
+                ]
+            },
+            {
+                id: 'duomo-03-02',
+                title: '站在遺址中央：想像古代教堂',
+                artist: '03｜地底遺址與教堂內部',
+                year: '地下考古空間',
+                floor: '03｜地底遺址與教堂內部',
+                room: '03-02 點位',
+                roomCode: '03-02',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Santa_reparata_scavi_02.jpg/800px-Santa_reparata_scavi_02.jpg',
+                audioText: '現在請稍微停下來，不妨想像腳下原本是一座完整運作的教堂。你現在看到的牆基、柱基與地面，不是單獨的考古物件，而是過去教堂空間的一部分。這也是聖雷帕拉塔遺址最重要的價值：它讓我們看到佛羅倫斯並不是一次建造完成的城市，而是不同時代一層一層疊加在一起。等一下回到上方的聖母百花大教堂時，可以特別留意：腳下這座古老教堂的尺度，與現在巨大主教座堂之間形成非常鮮明的對比。',
+                highlights: [
+                    '尋找古老教堂的中殿方向',
+                    '看柱基與牆基排列',
+                    '注意地面不同時期的痕跡',
+                    '想像上方巨大穹頂覆蓋在這片古代遺址之上'
+                ]
+            },
+            {
+                id: 'duomo-03-03',
+                title: '聖母百花大教堂內部：文藝復興的巨大空間',
+                artist: '03｜地底遺址與教堂內部',
+                year: '主教座堂中殿',
+                floor: '03｜地底遺址與教堂內部',
+                room: '03-03 點位',
+                roomCode: '03-03',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Florence_Duomo_interior.jpg/800px-Florence_Duomo_interior.jpg',
+                audioText: '回到地面後，抬頭看看今天的聖母百花大教堂。與米蘭大教堂繁複的哥德式裝飾相比，佛羅倫斯主教座堂的內部更加強調巨大尺度、幾何比例與結構秩序。最重要的視覺焦點就是布魯內萊斯基的圓頂。從地面向上看，可以真正感受到穹頂的巨大尺寸。剛才你是在穹頂內部近距離觀看壁畫與工程結構，現在則從下方重新觀看整體。這個角度最適合理解：布魯內萊斯基不只是創造了一座穹頂，而是重新定義了整個佛羅倫斯的城市空間。',
+                highlights: [
+                    '從正中央仰望整座穹頂',
+                    '巨大的八角形空間',
+                    '兩側高聳的拱廊',
+                    '彩色玻璃窗',
+                    '地面幾何圖案',
+                    '注意人物站在巨大空間中的比例'
+                ]
+            },
+            {
+                id: 'duomo-03-04',
+                title: '《最後的審判》：從地面觀看',
+                artist: '03｜地底遺址與教堂內部',
+                year: '整體視覺焦點',
+                floor: '03｜地底遺址與教堂內部',
+                room: '03-04 點位',
+                roomCode: '03-04',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Florence_Duomo_Interior_View_Up.jpg/800px-Florence_Duomo_Interior_View_Up.jpg',
+                audioText: '現在再次看《最後的審判》。與剛才登頂時不同，這次請把注意力放在「整體」。從地面看，壁畫不再是單獨的人物與細節，而是一個巨大的宗教敘事空間。中央的基督形成視覺核心，周圍的人物與天使向四周延伸，再往下則逐漸進入更加混亂、戲劇化的場景。你可以把剛才登頂看到的局部細節與現在的整體構圖連在一起。這也是參觀圓頂最好的方式：先在地面看整體，再登頂看細節，最後回到地面重新理解全貌。',
+                highlights: [
+                    '找到中央基督',
+                    '往下追蹤人物群',
+                    '比較「遠看」與剛才「近看」的差異',
+                    '注意八角形穹頂如何成為壁畫的畫框'
+                ]
+            },
+            {
+                id: 'duomo-04-01',
+                title: '博物館：把被拆下的教堂藝術重新集中',
+                artist: '04｜主教座堂博物館',
+                year: '藝術寶庫',
+                floor: '04｜主教座堂博物館',
+                room: '04-01 點位',
+                roomCode: '04-01',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Museo_dell%27Opera_del_Duomo_Florence.jpg/800px-Museo_dell%27Opera_del_Duomo_Florence.jpg',
+                audioText: '最後來到主教座堂博物館。這座博物館最重要的特色，是許多原本屬於佛羅倫斯主教座堂、洗禮堂與鐘樓的雕塑與藝術品，都被移到室內保存。因此可以把這裡理解成「聖母百花大教堂建築群的藝術寶庫」。在教堂現場，你看到的是建築與藝術融合後的整體；在博物館裡，則可以近距離研究原本位於高處、外牆或門上的雕塑。如果時間有限，不必每一件都看，應該集中欣賞幾件代表性作品。',
+                highlights: [
+                    '了解藝術品由戶外移至室內保存的意義',
+                    '近距離觀察雕塑細節與質感',
+                    '集中欣賞幾件核心代表作品'
+                ]
+            },
+            {
+                id: 'duomo-04-02',
+                title: '米開朗基羅《佛羅倫斯聖殤》',
+                artist: '04｜主教座堂博物館',
+                year: '米開朗基羅晚年',
+                floor: '04｜主教座堂博物館',
+                room: '04-02 點位',
+                roomCode: '04-02',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Florence_Piet%C3%A0_Michelangelo.jpg/800px-Florence_Piet%C3%A0_Michelangelo.jpg',
+                audioText: '這件《佛羅倫斯聖殤》是米開朗基羅晚年的重要作品之一。與他年輕時期著名的《聖殤》相比，這件作品更加私人，也更加內省。中央是基督，周圍人物共同支撐著他的身體。人物之間沒有強烈的戲劇動作，而是形成一種沉重、凝聚的悲傷感。米開朗基羅原本似乎希望這件作品成為自己的墓葬作品，因此它與藝術家的晚年生命感受密切相關。仔細看人物之間的關係，可以感受到這不是單純展示人體美，而是在思考死亡、信仰與救贖。',
+                highlights: [
+                    '基督下垂的身體',
+                    '聖母與其他人物的支撐關係',
+                    '注意米開朗基羅刻意留下的未完成感',
+                    '觀察粗糙與精細表面形成的差異'
+                ]
+            },
+            {
+                id: 'duomo-04-03',
+                title: '多納太羅《抹大拉的瑪利亞》',
+                artist: '04｜主教座堂博物館',
+                year: '多納太羅',
+                floor: '04｜主教座堂博物館',
+                room: '04-03 點位',
+                roomCode: '04-03',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Donatello%2C_Maddalena_penitente_01.jpg/800px-Donatello%2C_Maddalena_penitente_01.jpg',
+                audioText: '接下來是多納太羅著名的《抹大拉的瑪利亞》。如果你期待看到一位年輕、美麗的聖人，這件作品會完全顛覆你的想像。多納太羅把瑪利亞描繪成一位歷經苦修、年老而憔悴的女性。身體消瘦、長髮垂落，臉部充滿疲憊與痛苦。這種寫實甚至近乎殘酷的表現，讓宗教人物不再只是理想化的美，而成為具有真實生命經驗的人。',
+                highlights: [
+                    '消瘦的身體',
+                    '長髮與鬍鬚般的毛髮處理',
+                    '臉部深刻的皺紋',
+                    '手部姿勢',
+                    '注意作品如何透過「不美」表達虔誠與苦修'
+                ]
+            },
+            {
+                id: 'duomo-04-04',
+                title: '洗禮堂天堂之門原件',
+                artist: '04｜主教座堂博物館',
+                year: '吉貝爾蒂青銅原件',
+                floor: '04｜主教座堂博物館',
+                room: '04-04 點位',
+                roomCode: '04-04',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ghiberti_Door_Originals_Museo_Opera_Duomo.jpg/800px-Ghiberti_Door_Originals_Museo_Opera_Duomo.jpg',
+                audioText: '如果你剛才已經參觀過洗禮堂，現在在博物館看到的作品會更容易理解。博物館保存了重要的原始藝術品，讓你可以在室內近距離觀看細節。與洗禮堂外牆上的複製品相比，博物館展示讓你更容易觀察青銅浮雕的層次、人物姿態與透視效果。吉貝爾蒂的革新在於，他不只是在雕刻人物，而是在青銅表面創造出一個具有深度的「舞台」。',
+                highlights: [
+                    '人物前後景',
+                    '建築與透視',
+                    '高浮雕到淺浮雕的變化',
+                    '小人物與背景細節',
+                    '青銅表面的光影'
+                ]
+            },
+            {
+                id: 'duomo-04-05',
+                title: '喬托鐘樓雕塑',
+                artist: '04｜主教座堂博物館',
+                year: '14-15世紀雕塑演變',
+                floor: '04｜主教座堂博物館',
+                room: '04-05 點位',
+                roomCode: '04-05',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Giotto_campanile_statues.jpg/800px-Giotto_campanile_statues.jpg',
+                audioText: '博物館另一個重要收藏，是原本屬於喬托鐘樓的雕塑。這些作品原本位於高處，從地面只能遠遠看到輪廓；移入博物館後，你終於可以近距離觀看藝術家的雕刻技巧。這裡可以特別留意14、15世紀佛羅倫斯雕塑逐漸擺脫僵硬的中世紀形式，開始強調人物的重量、表情與身體結構。因此，這座博物館其實也是一條「佛羅倫斯雕塑演變史」。',
+                highlights: [
+                    '人物臉部表情',
+                    '衣服皺褶',
+                    '人體重量感',
+                    '雕塑原本位於高處的尺度',
+                    '比較早期作品與文藝復興作品的差異'
+                ]
+            },
+            {
+                id: 'duomo-04-06',
+                title: '歌壇 Cantorie：看文藝復興如何進入雕塑',
+                artist: '04｜主教座堂博物館',
+                year: '多納太羅與德拉・羅比亞',
+                floor: '04｜主教座堂博物館',
+                room: '04-06 點位',
+                roomCode: '04-06',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Cantoria_donatello.jpg/800px-Cantoria_donatello.jpg',
+                audioText: '最後可以看看博物館收藏的兩組歌壇浮雕。其中最重要的兩位藝術家，是多納太羅與盧卡・德拉・羅比亞。作品描繪兒童、天使與歌唱者，透過連續的人物動作表現音樂與節奏。這裡非常值得注意：雕塑原本服務於建築空間，因此藝術家必須讓人物在遠距離也能被看見；但今天它們被放到博物館裡，我們反而可以近距離觀察每一個人物的動作。這正是主教座堂博物館最有趣的地方——把原本屬於巨大建築的藝術，重新縮小到人的觀看尺度。',
+                highlights: [
+                    '兒童與天使的動作',
+                    '手勢與節奏感',
+                    '人物如何排列成連續畫面',
+                    '雕塑與建築原本的關係'
+                ]
+            },
+            {
+                id: 'duomo-04-07',
+                title: '主教座堂博物館總結',
+                artist: '04｜主教座堂博物館',
+                year: '藝術史總結',
+                floor: '04｜主教座堂博物館',
+                room: '04-07 點位',
+                roomCode: '04-07',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Museo_Opera_Duomo_Florence_Hall.jpg/800px-Museo_Opera_Duomo_Florence_Hall.jpg',
+                audioText: '如果把今天的佛羅倫斯主教座堂建築群串起來，你其實走過了一條完整的藝術史。在洗禮堂，看到的是中世紀與拜占庭傳統。在聖母百花大教堂，看到的是哥德式建築與文藝復興工程。在布魯內萊斯基圓頂，看到數學、工程與建築的突破。而在主教座堂博物館，則可以近距離看到多納太羅、吉貝爾蒂、米開朗基羅等藝術家的作品。因此，這裡不是單純的四個景點，而是一個完整的佛羅倫斯藝術系統。',
+                highlights: [
+                    '① 布魯內萊斯基圓頂 → 文藝復興工程奇蹟',
+                    '② 圓頂《最後的審判》 → 佛羅倫斯最震撼的宗教壁畫之一',
+                    '③ 洗禮堂金色馬賽克穹頂 → 拜占庭傳統與佛羅倫斯宗教藝術',
+                    '④ 天堂之門 → 吉貝爾蒂的青銅浮雕與透視革新',
+                    '⑤ 米開朗基羅《佛羅倫斯聖殤》 → 晚年作品與未完成之美',
+                    '⑥ 多納太羅《抹大拉的瑪利亞》 → 文藝復興寫實雕塑的震撼表現'
+                ]
+            }
+        ];
+
+        /* APPLICATION STATE */
+        let currentTab = 'artworks';
+        let currentArtwork = artworksData[0];
+        let activeFloorFilter = 'all';
+        let favorites = new Set(JSON.parse(localStorage.getItem('duomo_favs') || '[]'));
+        let visited = new Set(JSON.parse(localStorage.getItem('duomo_visited') || '[]'));
+        let showFavoritesOnly = false;
+
+        /* Map Interactive State */
+        let currentActiveFloor = '01｜Cupola 登頂';
+        let mapScale = 1.8;
+        let mapPanX = 0;
+        let mapPanY = 0;
+
+        /* Speech Synthesis States */
+        let isPlaying = false;
+        let speechProgressTimer = null;
+        let playbackSpeed = 1.0;
+        let playProgressPercent = 0;
+
+        /* Initializer */
+        window.onload = function() {
+            lucide.createIcons();
+            renderArtworkList();
+            renderRouteSteps();
+            updateProgressStats();
+            updatePlayerBarUI();
+            
+            initInteractiveMapEvents();
+            if (currentArtwork) {
+                switchMapFloor(currentArtwork.floor);
+                highlightRoomOnMap(currentArtwork.roomCode);
+            }
+        };
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            ['artworks', 'map', 'info'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (t === tabName) {
+                    el.classList.remove('hidden');
+                    navBtn.classList.add('text-ferrari-yellow');
+                    navBtn.classList.remove('text-gray-500');
+                } else {
+                    el.classList.add('hidden');
+                    navBtn.classList.remove('text-ferrari-yellow');
+                    navBtn.classList.add('text-gray-500');
+                }
+            });
+
+            if (tabName === 'map' && currentArtwork) {
+                switchMapFloor(currentArtwork.floor);
+                highlightRoomOnMap(currentArtwork.roomCode);
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function filterByFloor(floor) {
+            activeFloorFilter = floor;
+            document.querySelectorAll('.floor-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-ferrari-carbon', 'text-ferrari-yellow', 'active');
+                btn.classList.add('bg-carbon-pattern', 'text-gray-300', 'border-gray-700');
+            });
+            event.currentTarget.classList.add('bg-ferrari-carbon', 'text-ferrari-yellow', 'active');
+            event.currentTarget.classList.remove('bg-carbon-pattern', 'text-gray-300', 'border-gray-700');
+            renderArtworkList();
+        }
+
+        function filterArtworks() {
+            renderArtworkList();
+        }
+
+        function toggleFavoriteFilter() {
+            showFavoritesOnly = !showFavoritesOnly;
+            const btn = document.getElementById('fav-filter-btn');
+            if (showFavoritesOnly) {
+                btn.classList.add('text-ferrari-yellow', 'border-ferrari-yellow');
+            } else {
+                btn.classList.remove('text-ferrari-yellow', 'border-ferrari-yellow');
+            }
+            renderArtworkList();
+        }
+
+        function renderArtworkList() {
+            const searchKeyword = document.getElementById('search-input').value.toLowerCase().trim();
+            const container = document.getElementById('artwork-list');
+            container.innerHTML = '';
+
+            const filtered = artworksData.filter(item => {
+                const matchFloor = activeFloorFilter === 'all' || item.floor === activeFloorFilter;
+                const matchSearch = item.title.toLowerCase().includes(searchKeyword) || 
+                                    item.artist.toLowerCase().includes(searchKeyword) || 
+                                    item.room.toLowerCase().includes(searchKeyword);
+                const matchFav = !showFavoritesOnly || favorites.has(item.id);
+                return matchFloor && matchSearch && matchFav;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-gray-500 text-[15px]">
+                        <i data-lucide="search-x" class="w-8 h-8 mx-auto mb-2 text-gray-600"></i>
+                        沒有找到符合條件的導覽點位
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(item => {
+                const isFav = favorites.has(item.id);
+                const isCurrent = currentArtwork && currentArtwork.id === item.id;
+
+                const card = document.createElement('div');
+                card.className = `carbon-card rounded-2xl p-3 flex gap-3 items-center cursor-pointer transition ${isCurrent ? 'carbon-card-active' : ''}`;
+                card.onclick = () => selectArtwork(item);
+
+                card.innerHTML = `
+                    <div class="relative w-20 h-20 rounded-xl overflow-hidden bg-black flex-shrink-0 border border-white/10">
+                        <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x600/161619/FFD700?text=Duomo+di+Firenze'">
+                        <span class="absolute top-1 left-1 bg-ferrari-red/90 text-white font-tech text-[12px] font-bold px-1.5 py-0.2 rounded">
+                            ${item.roomCode}
+                        </span>
+                    </div>
+                    <div class="flex-1 min-w-0 space-y-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-[15px] font-bold text-white truncate">${item.title}</h3>
+                            <button onclick="event.stopPropagation(); toggleFavorite('${item.id}')" class="text-gray-400 hover:text-ferrari-yellow p-1">
+                                <i data-lucide="bookmark" class="w-3.5 h-3.5 ${isFav ? 'text-ferrari-yellow fill-ferrari-yellow' : ''}"></i>
+                            </button>
+                        </div>
+                        <p class="text-[13px] text-gray-400 truncate">${item.artist}</p>
+                        <div class="flex items-center gap-2 text-[13px] text-gray-500 font-tech">
+                            <span><i data-lucide="headphones" class="w-3 h-3 inline text-ferrari-red"></i> 語音導覽</span>
+                            <span>•</span>
+                            <span class="text-ferrari-gold font-bold">${item.roomCode}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function selectArtwork(item) {
+            currentArtwork = item;
+            visited.add(item.id);
+            localStorage.setItem('duomo_visited', JSON.stringify([...visited]));
+            updateProgressStats();
+            renderArtworkList();
+            updatePlayerBarUI();
+            
+            switchMapFloor(item.floor);
+            highlightRoomOnMap(item.roomCode);
+            openArtworkModal();
+            readAudioSpeech();
+        }
+
+        function selectArtworkByRoom(roomCode) {
+            const found = artworksData.find(a => a.roomCode === roomCode);
+            if (found) {
+                selectArtwork(found);
+            } else {
+                highlightRoomOnMap(roomCode);
+            }
+        }
+
+        /* MAP HIGHLIGHT FUNCTION */
+        function highlightRoomOnMap(roomCode) {
+            document.querySelectorAll('.room-box').forEach(el => {
+                el.classList.remove('active-room');
+            });
+            document.querySelectorAll('[id^="room-"]').forEach(el => {
+                el.classList.remove('active-room');
+            });
+            if (!roomCode) return;
+
+            const targets = document.querySelectorAll(`#room-${roomCode}`);
+
+            targets.forEach(target => {
+                target.classList.add('active-room');
+                const childBox = target.querySelector('.room-box');
+                if (childBox) {
+                    childBox.classList.add('active-room');
+                }
+            });
+
+            const tagEl = document.getElementById('flashing-room-tag');
+            if (tagEl) {
+                tagEl.innerHTML = `<span class="animate-pulse text-ferrari-yellow">⚡ 點位 ${roomCode} 閃爍定位中</span>`;
+            }
+        }
+
+        function toggleFavorite(id) {
+            if (favorites.has(id)) {
+                favorites.delete(id);
+            } else {
+                favorites.add(id);
+            }
+            localStorage.setItem('duomo_favs', JSON.stringify([...favorites]));
+            renderArtworkList();
+            updateModalFavButton();
+        }
+
+        function toggleCurrentFavorite() {
+            if (currentArtwork) {
+                toggleFavorite(currentArtwork.id);
+            }
+        }
+
+        function updateModalFavButton() {
+            if (!currentArtwork) return;
+            const isFav = favorites.has(currentArtwork.id);
+            const btn = document.getElementById('modal-fav-btn');
+            if (btn) {
+                btn.innerHTML = `<i data-lucide="bookmark" class="w-5 h-5 ${isFav ? 'text-ferrari-yellow fill-ferrari-yellow' : ''}"></i>`;
+                lucide.createIcons();
+            }
+        }
+
+        function updateProgressStats() {
+            const vCount = document.getElementById('visited-count');
+            const tCount = document.getElementById('total-count');
+            if (vCount) vCount.innerText = visited.size;
+            if (tCount) tCount.innerText = artworksData.length;
+        }
+
+        /* Map Switching Logic */
+        function switchMapFloor(floor) {
+            currentActiveFloor = floor;
+            const titleEl = document.getElementById('map-floor-title');
+            
+            const btn01 = document.getElementById('btn-map-01');
+            const btn04 = document.getElementById('btn-map-04');
+            const map1f = document.getElementById('map-graphic-1f');
+            const map2f = document.getElementById('map-graphic-2f');
+
+            if (floor === '02｜聖若翰洗者洗禮堂' || floor === '04｜主教座堂博物館') {
+                if (titleEl) titleEl.innerText = 'BAPTISTERY & MUSEUM (洗禮堂與博物館地圖)';
+                if (btn04) btn04.className = 'text-[13px] px-2 py-1 rounded-lg font-bold bg-ferrari-carbon border border-ferrari-red text-white';
+                if (btn01) btn01.className = 'text-[13px] px-2 py-1 rounded-lg font-bold text-gray-400 hover:text-white';
+                if (map2f) map2f.classList.remove('hidden');
+                if (map1f) map1f.classList.add('hidden');
+            } else {
+                if (titleEl) titleEl.innerText = 'CATHEDRAL & CUPOLA (主教堂與圓頂登頂地圖)';
+                if (btn01) btn01.className = 'text-[13px] px-2 py-1 rounded-lg font-bold bg-ferrari-carbon border border-ferrari-red text-white';
+                if (btn04) btn04.className = 'text-[13px] px-2 py-1 rounded-lg font-bold text-gray-400 hover:text-white';
+                if (map1f) map1f.classList.remove('hidden');
+                if (map2f) map2f.classList.add('hidden');
+            }
+
+            applyMapTransform();
+            if (currentArtwork) {
+                highlightRoomOnMap(currentArtwork.roomCode);
+            }
+        }
+
+        function applyMapTransform() {
+            const isAlt = currentActiveFloor === '02｜聖若翰洗者洗禮堂' || currentActiveFloor === '04｜主教座堂博物館';
+            const targetId = isAlt ? 'map-viewport-2f' : 'map-viewport-1f';
+            const viewport = document.getElementById(targetId);
+            if (viewport) {
+                viewport.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
+            }
+        }
+
+        function zoomMap(delta) {
+            mapScale = Math.min(Math.max(1.0, mapScale + delta), 3.5);
+            applyMapTransform();
+        }
+
+        function resetMapZoom() {
+            mapScale = 1.8;
+            mapPanX = 0;
+            mapPanY = 0;
+            applyMapTransform();
+        }
+
+        function initInteractiveMapEvents() {
+            ['map-graphic-1f', 'map-graphic-2f'].forEach(mapId => {
+                const el = document.getElementById(mapId);
+                if (!el) return;
+
+                let isDragging = false;
+                let startX = 0;
+                let startY = 0;
+
+                el.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    startX = e.clientX - mapPanX;
+                    startY = e.clientY - mapPanY;
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    mapPanX = e.clientX - startX;
+                    mapPanY = e.clientY - startY;
+                    applyMapTransform();
+                });
+
+                window.addEventListener('mouseup', () => {
+                    isDragging = false;
+                });
+
+                /* Touch support */
+                el.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) {
+                        isDragging = true;
+                        startX = e.touches[0].clientX - mapPanX;
+                        startY = e.touches[0].clientY - mapPanY;
+                    }
+                });
+
+                el.addEventListener('touchmove', (e) => {
+                    if (isDragging && e.touches.length === 1) {
+                        mapPanX = e.touches[0].clientX - startX;
+                        mapPanY = e.touches[0].clientY - startY;
+                        applyMapTransform();
+                    }
+                });
+
+                el.addEventListener('touchend', () => {
+                    isDragging = false;
+                });
+            });
+        }
+
+        /* Render Sequence Steps */
+        function renderRouteSteps() {
+            const container = document.getElementById('route-steps');
+            if (!container) return;
+            container.innerHTML = '';
+
+            artworksData.forEach((item, idx) => {
+                const step = document.createElement('div');
+                step.className = 'p-2.5 bg-black/40 rounded-xl border border-white/10 flex items-center gap-3 cursor-pointer hover:border-ferrari-red transition';
+                step.onclick = () => selectArtwork(item);
+                step.innerHTML = `
+                    <span class="w-6 h-6 rounded-full bg-ferrari-carbon border border-ferrari-red text-ferrari-yellow font-tech text-[12px] font-bold flex items-center justify-center shrink-0">
+                        ${idx + 1}
+                    </span>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[14px] font-bold text-white truncate">${item.title}</div>
+                        <div class="text-[12px] text-gray-400 truncate">${item.artist}</div>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
+                `;
+                container.appendChild(step);
+            });
+            lucide.createIcons();
+        }
+
+        function updatePlayerBarUI() {
+            if (!currentArtwork) return;
+            document.getElementById('player-thumb').src = currentArtwork.img;
+            document.getElementById('player-room').innerText = currentArtwork.roomCode;
+            document.getElementById('player-title').innerText = currentArtwork.title;
+            document.getElementById('player-artist').innerText = currentArtwork.artist;
+        }
+
+        function openArtworkModal() {
+            if (!currentArtwork) return;
+            const modal = document.getElementById('artwork-modal');
+            document.getElementById('modal-image').src = currentArtwork.img;
+            document.getElementById('modal-room-badge').innerText = `點位 ${currentArtwork.roomCode}`;
+            document.getElementById('modal-title').innerText = `${currentArtwork.roomCode}｜${currentArtwork.title}`;
+            document.getElementById('modal-artist').innerText = currentArtwork.artist;
+            document.getElementById('modal-year').innerText = currentArtwork.year;
+
+            // Render Text Paragraphs
+            const descContainer = document.getElementById('modal-description');
+            descContainer.innerHTML = '';
+            const paragraphs = currentArtwork.audioText.split('。');
+            let currentP = '';
+            paragraphs.forEach((p, idx) => {
+                if (!p.trim()) return;
+                currentP += p.trim() + '。';
+                if (currentP.length > 80 || idx === paragraphs.length - 1) {
+                    const pEl = document.createElement('p');
+                    pEl.className = 'text-gray-200 text-[16px] leading-relaxed';
+                    pEl.innerText = currentP;
+                    descContainer.appendChild(pEl);
+                    currentP = '';
+                }
+            });
+
+            // Highlights
+            const hlContainer = document.getElementById('modal-highlights');
+            hlContainer.innerHTML = '';
+            currentArtwork.highlights.forEach(h => {
+                const li = document.createElement('li');
+                li.innerText = h;
+                hlContainer.appendChild(li);
+            });
+
+            updateModalFavButton();
+            modal.classList.remove('hidden');
+        }
+
+        function closeArtworkModal() {
+            document.getElementById('artwork-modal').classList.add('hidden');
+        }
+
+        /* Speech Synthesis Logic */
+        function readAudioSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                if (speechProgressTimer) clearInterval(speechProgressTimer);
+
+                if (currentArtwork) {
+                    switchMapFloor(currentArtwork.floor);
+                    highlightRoomOnMap(currentArtwork.roomCode);
+                }
+
+                const utterance = new SpeechSynthesisUtterance(currentArtwork.audioText);
+                utterance.lang = 'zh-TW';
+                utterance.rate = playbackSpeed;
+
+                playProgressPercent = 0;
+                updateProgressBarUI();
+
+                utterance.onstart = function() {
+                    isPlaying = true;
+                    updatePlayIcons();
+                    
+                    const estimatedTimeMs = (currentArtwork.audioText.length * 280) / playbackSpeed;
+                    const startTime = Date.now();
+
+                    speechProgressTimer = setInterval(() => {
+                        const elapsed = Date.now() - startTime;
+                        playProgressPercent = Math.min(100, (elapsed / estimatedTimeMs) * 100);
+                        updateProgressBarUI();
+                        if (playProgressPercent >= 100) {
+                            clearInterval(speechProgressTimer);
+                        }
+                    }, 200);
+                };
+
+                utterance.onend = function() {
+                    isPlaying = false;
+                    playProgressPercent = 100;
+                    updateProgressBarUI();
+                    updatePlayIcons();
+                    if (speechProgressTimer) clearInterval(speechProgressTimer);
+                };
+
+                utterance.onerror = function() {
+                    isPlaying = false;
+                    updatePlayIcons();
+                    if (speechProgressTimer) clearInterval(speechProgressTimer);
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleAudioSpeech() {
+            if ('speechSynthesis' in window) {
+                if (window.speechSynthesis.speaking) {
+                    if (window.speechSynthesis.paused) {
+                        window.speechSynthesis.resume();
+                        isPlaying = true;
+                    } else {
+                        window.speechSynthesis.pause();
+                        isPlaying = false;
+                    }
+                    updatePlayIcons();
+                } else {
+                    readAudioSpeech();
+                }
+            }
+        }
+
+        function changeSpeed() {
+            if (playbackSpeed === 1.0) playbackSpeed = 1.25;
+            else if (playbackSpeed === 1.25) playbackSpeed = 1.5;
+            else playbackSpeed = 1.0;
+
+            const btn = document.getElementById('modal-speed-btn');
+            if (btn) btn.innerText = `${playbackSpeed}x 語速`;
+
+            if (isPlaying) {
+                readAudioSpeech();
+            }
+        }
+
+        function updatePlayIcons() {
+            const iconName = isPlaying ? 'pause' : 'play';
+            const playIcon = document.getElementById('play-icon');
+            const modalPlayIcon = document.getElementById('modal-play-icon');
+
+            if (playIcon) playIcon.setAttribute('data-lucide', iconName);
+            if (modalPlayIcon) modalPlayIcon.setAttribute('data-lucide', iconName);
+            lucide.createIcons();
+        }
+
+        function updateProgressBarUI() {
+            const bar = document.getElementById('audio-progress-bar');
+            if (bar) {
+                bar.style.width = `${playProgressPercent}%`;
+            }
+        }
+    </script>
+</body>
+</html>
